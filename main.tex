@@ -1,0 +1,523 @@
+\documentclass{article}
+
+% Formatting
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{csvsimple}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{longtable}
+
+\title{\Huge{Forest Fire Detector Network \\ \Large Group 41}}
+\author{
+{
+\centering
+\begin{tabular}{c c c c}
+Ian Wallace & Paul Wood & Parke Benjamin & Randy Alvarez \\
+\normalsize\textit{Computer Engineering} & \normalsize\textit{Computer Engineering} & \normalsize\textit{Electrical Engineering} & \normalsize\textit{Electrical Engineering} \\
+\end{tabular}
+}
+}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+\subsection{Narrative Description and Motivation}
+For this project, we plan to create a sensor network used for detecting forest fires. The sensor network will consist of multiple identical nodes. These nodes will be physically mounted on trees and evenly spread throughout the area to be monitored. Each node will contain sensors that will be used to detect a fire. Each node will also contain a LoRa transceiver that will be used to propagate data through the sensor network to the base station. This base station will process the data to determine if there is a fire and can relay that information to a human operator. This network should help detect forest fires early, before they become too large and difficult to contain.
+
+\subsection{Project Goals}
+\begin{itemize}
+    \item The sensor nodes should be low cost. 
+    \item The sensor nodes should be lightweight. 
+    \item The sensor nodes should be able to read data in from the environment and that data through other nodes to the base station. 
+    \item The sensors nodes should be able to communicate over a large enough distance in order to make it feasible to cover large enough area with nodes.
+    \item The nodes should require little to no maintenance i.e. "place and forget".
+    \item The sensors nodes should be easy to install.
+    \item The base station should be able to connect to the internet to notify an operator about a forest fire.
+    
+\end{itemize}
+
+\section{Requirements and Constraints}
+\subsection{Requirements}
+\begin{tabularx}{\linewidth}{|X|c|c|}
+\hline
+Requirement & Value & Units \\
+\hline
+The nodes shall use LoRa as the communication protocol. & N/A & N/A \\\hline
+The nodes shall be able connect to a computer and be controlled using a command line interface. & N/A & N/A \\\hline
+The nodes shall meet the IP54 requirements. & N/A & N/A \\\hline
+The nodes shall not consume more than 250 mW. & 250 & mW \\\hline
+The nodes shall last 1-2 years before a battery replacement becomes necessary. & 1-2 & years \\\hline
+The nodes shall use solar panels. & N/A & N/A \\\hline
+The base station shall be able to connect to the internet. & N/A & N/A \\\hline
+The base station shall be able to alert a human operator about a fire. & N/A & N/A \\\hline
+The base station shall be to run a server instance. & N/A & N/A \\\hline
+The base station shall be have an Ethernet module. & N/A & N/A \\\hline
+The base station shall be able to control and receive data from the nodes. & N/A & N/A \\\hline
+The base station shall be able to display information to the user via a GUI. & N/A & N/A \\\hline
+The base station shall have a long range transmitter and antenna in order to communicate with nodes up to 15 km away. & 15 & km \\\hline
+The base station shall have a powerful enough processor in order to maintain communication with nodes and run a server instance. & N/A & N/A \\\hline
+
+
+\end{tabularx}
+
+\subsection{Constraints}
+\begin{tabularx}{\linewidth}{|X|c|c|}
+\hline
+Constraint & Value & Units \\
+\hline
+The nodes must be light enough so that they can be affixed to a tree or other tall structure and not be of a concern to fall off. & N/A & N/A \\\hline
+The nodes must cost lower than or the same as alternative forest fire monitoring methods. & N/A & N/A \\\hline
+The nodes must be able to withstand water from rainfall. & N/A & N/A \\\hline
+The nodes must be able to withstand high winds. & N/A & N/A \\\hline
+The nodes must be able to withstand temperature extremes. & N/A & N/A \\\hline
+The nodes must be able to support a communication range of 3 to 4 miles in order to cover a larger area with a low node density. & 3-4 & miles \\\hline
+The nodes must be able to operate on less power than what one solar panel could generate in a single day to allow for operation when there is no sunlight present. & N/A & N/A \\\hline
+The base station must be able to operate off of mains power. & N/A & N/A \\\hline
+
+\end{tabularx}
+
+
+\section{Block Diagram}
+% Block Diagram for Node HW
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=4.6in]{"./hwNodeBD.png"} 
+    \caption{The block diagram for the sensor node hardware.}
+    \label{fig:hwNodeBD}
+\end{figure}
+
+% Block Diagram for Base Station HW
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=4.6in]{"./hwBaseStationBD.png"} 
+    \caption{The block diagram for the base station hardware.}
+    \label{fig:hwBaseStationBD}
+\end{figure}
+
+% TODO: base station software
+% Block Diagram for Node Station SW
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=4.6in]{"./swNodeBD.png"} 
+    \caption{The block diagram for the node software.}
+    \label{fig:swNodeBD}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \caption{A description of each block in the sensor node hardware block diagram.}
+    \begin{tabularx}{\linewidth}{|c|X|}
+        \hline
+        Block Name & Description \\ 
+        \hline
+        Battery & The battery will take in power from the power subsystem and will store whatever is left over from the consumption by the system controller. \\\hline
+        Power Subsystem & The power subsystem will take in and regulate power from the solar panel charging the battery as well as taking power from the battery for whatever needs the system controller requires. The power subsystem will also invert the DC power from the solar panel and battery to AC if required. \\\hline
+        Solar Panel & The solar panel will feed power to the power subsystem where a solar power controller will be placed to take in the generated power. \\\hline
+        System Controller & The system controller take in and process data from the sensors and output data to the LoRa transceiver. \\\hline
+        Humidity Sensor & The humidity sensor will take a measurement of the relative humidity and send it to the system controller. \\\hline
+        Temperature Sensor & The temperature sensor will take a measurement of the current temperature and send it to the system controller. \\\hline
+        Camera & The camera will capture an image and send it to the system controller. \\\hline
+        LoRa & The LoRa transceiver will receive data from the system controller and send that data to either another sensor node or the base station. \\\hline
+    \end{tabularx}
+    
+    \label{tab:descHWNodeBD}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \caption{A description of each block in the base station hardware block diagram.}
+    \begin{tabularx}{\linewidth}{|c|X|}
+        \hline
+        Block Name & Description \\ 
+        \hline
+        Power Subsystem & The power subsystem will take in power from the battery for whatever needs the development board requires. The power subsystem will also invert the DC power from the solar panel and battery to AC if required. \\\hline
+        Mains Power & This is the AC power coming from a wall outlet. \\\hline
+        Ethernet & The Ethernet module will alow the development board to connect to the internet. \\\hline
+        LoRa & The LoRa transceiver will receive data from the sensor nodes and send that data to the development board. \\\hline
+        Development Board & The development board will process the sensor data recieve from the sensor nodes and will determine if that data indicates a forest fire. If a forest fire is detected, it will send a signal to a human operator over the internet. \\\hline
+    \end{tabularx}
+    \label{tab:descHWBaseStationBD}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \caption{A description of each block in the sensor node hardware block diagram.}
+    \begin{tabularx}{\linewidth}{|c|X|}
+        \hline
+        Block Name & Description \\ 
+        \hline
+        Power Management & This software will responsible for controlling and monitoring the power subsystem.  \\\hline
+        Data Management & This software will be responsible for processing data received from the sensors. \\\hline
+        Sleeping Logic & This software will handle the logic for switching between taking sensor measurements and residing in a low-power "sleep" mode between sensor measurements. \\\hline
+        LoRa & This is a device driver for the LoRa transceiver. \\\hline
+        Camera & This is a device driver for the camera. \\\hline
+        Temperature Sensor & This is a device driver for the temperature sensor. \\\hline
+        Humidity Sensor & This is a device driver for the humidity sensor. \\\hline
+        LoRaWAN & This handles the networking for the LoRa networking. \\\hline
+        Multi-hop Routing & This software will control how traffic is routed around the sensor node network. \\\hline
+    \end{tabularx}
+    \label{tab:descSWNodeBD}
+\end{table}
+
+\section{Estimated Budget}
+\begin{table}[H]
+\centering
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        Component & Approx. Unit Cost & Quantity & Total Cost \\
+        \hline\hline
+        Solar Panel                 & \$30.00 & 1 & \$30.00 \\
+        Solar Charge Regulator      & \$20.00 & 1 & \$20.00 \\
+        Battery                     & \$10.00 & 1 & \$10.00 \\
+        Electronic Components       & \$10.00 & 1 & \$10.00 \\
+        \hline
+        LoRa Transceiver            & \$30.00 & 1 & \$30.00 \\
+        Microcontroller             & \$3.00  & 1 & \$3.00  \\
+        PCB                         & \$10.00 & 5 & \$10.00 \\
+        Electronic Components       & \$10.00 & 1 & \$10.00 \\
+        \hline
+        Humidity                    & \$3.00  & 1 & \$3.00 \\
+        Temperature                 & \$7.00  & 1 & \$7.00 \\
+        Camera                      & \$20.00 & 1 & \$20.00\\
+        \hline\hline
+        \multicolumn{2}{|}{Multirow} & Total & \$153 \\
+        \hline
+    \end{tabular}
+    \caption{The budget for each node.}
+\end{table}
+
+\begin{table}[H]
+\centering
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        Component & Approx. Unit Cost & Quantity & Total Cost \\
+        \hline\hline
+        Power Subsystem Components  & \$10.00 & 1 & \$10.00 \\
+        \hline
+        LoRa Transceiver            & \$30.00 & 1 & \$30.00 \\
+        Raspberry Pi 4              & \$35.00 & 1 & \$35.00   \\
+        Electronic Components       & \$10.00 & 1 & \$10.00 \\
+        \hline\hline
+        \multicolumn{2}{|}{Multirow} & Total & \$85 \\
+        \hline
+    \end{tabular}
+    \caption{The budget for the base station.} 
+\end{table}
+
+
+\section{Milestones}
+
+\subsection{Fall Semester}
+% TODO: Change spacing of the columns to make the description wider
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%                       Fall Milestones
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}[H]
+    \begin{tabularx}{\linewidth}{|c|X|X|}
+        \hline
+        Date & Milestone & Deliverables \\
+        \hline\hline
+        Sep. 2nd, 2021 
+        & Sensing mechanism finalized 
+        & Sensor requirements document \\
+        
+        \hline
+        Oct. 1st, 2021
+        & MCU and LoRa module finalized
+        & Order confirmation and, if available, shipment information. \\
+        
+        \hline
+        Oct. 8th, 2021 
+        & Sensors finalized 
+        & Order confirmation and, if available, shipment information. \\
+        
+        \hline
+        Nov. 5th, 2021 
+        & Software alpha 1.0 
+        & Software alpha 1.0 node and base-station release binaries. \\ 
+        
+        \hline
+        Nov. 19th, 2021 & Prototype v1.0 PCB 
+        & PCB masks, fab order confirmation and, if available, shipment information \\
+        
+        \hline
+        Dec 3rd, 2021 & Prototype v1.5 PCB 
+        & PCB masks, fab order confirmation and, if available, shipment information \\
+        
+        \hline
+        Dec 10th, 2021 
+        & Software alpha 1.5 
+        & Software alpha 1.5 node and base-station release binaries. \\ 
+        
+        \hline
+    \end{tabularx}
+    \caption{Fall milestones}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%                   Fall Milestones Descriptions
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\linewidth}{|c|X|}
+        \hline
+        Project Milestone & Description 
+        \\
+        \hline\hline
+        Sensing mechanism finalized &
+        Finish research and create design requirements for accurately detecting wildfires in a cost effective way.
+        \\
+        
+        
+        \hline
+        MCU and LoRa module finalized &
+        The MCU, LoRa module/daughter-boards, and Raspberry Pi's are chosen, and multiple developer boards have been ordered to design and test mesh networking.
+        \\
+        
+        \hline
+        Sensors finalized 
+        & The required sensors are chosen, and multiple parts/developer-boards have been ordered.
+        \\
+        
+        \hline
+        Software alpha 1.0 
+        & The nodes can communicate and route packets to the base station, and the base station can communicate with all or specific nodes on the network. There also exists some sort of command line interface on the base station to talk to the nodes, but there are no required internet capabilities of the base, yet. The nodes can go to sleep, but a sleep routine isn't configured optimally.
+        \\
+        
+        \hline
+        Prototype v1.0 PCB 
+        & A PCB first version prototype PCB has been designed and ordered from a fast-turnaround PCB fab containing all required functionalities: power subsystem, MCU, LoRa module connectivity, battery and solar I/O, and sensor I/O with adequate noise isolation and filtering.
+        \\
+        
+        \hline
+        Prototype v1.5 PCB
+        & PCB prototype with, if any, major issues fixed. Should also include sensor daughter boards.
+        \\
+        
+        \hline
+        Software alpha 1.5
+        & The software works on the prototype PCB
+        \\
+        
+        \hline
+    \end{tabularx}
+    \caption{Fall milestone descriptions}
+\end{table}
+
+\subsection{Spring Semester}
+% TODO: Change spacing of the columns to make the description wider
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%                       Spring Milestones
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}[H]
+    \begin{tabularx}{\linewidth}{|X|X|X|}
+        \hline
+        Date & Milestone & Deliverables \\
+        \hline\hline
+        Jan. 19th, 2022 
+        & Prototype v2.0 PCB 
+        & PCB masks, fab order confirmation and, if available, shipment information \\
+        
+        \hline
+        Jan. 19th, 2022
+        & Enclosure prototype
+        & Model and 3D printed enclosure
+        \\
+        
+        \hline
+        Jan. 29th, 2022 
+        & Software alpha 2.0 
+        & Software alpha 2.0 node and base-station release binaries
+        \\
+        
+        \hline
+        Feb. 18th, 2022
+        & REST API created
+        & REST API documentation and testing/validation scripts
+        \\
+        
+        \hline
+        Feb. 18th, 2022
+        & Enclosure finalized
+        & Model and 3D printed enclosure
+        \\
+        
+        \hline
+        Feb. 25th, 2022
+        & Final v1.0 PCB
+        & PCB masks, fab order confirmation and, if available, shipment information 
+        \\
+        
+        \hline
+        Mar. 1st, 2022
+        & Software release v1.0
+        & Software v1.0 node and base-station release binaries. 
+        \\ 
+        
+        \hline
+        Mar. 18st, 2022
+        & Software release v1.1
+        & Software v1.1 node and base-station release binaries. 
+        \\ 
+        
+        \hline
+        Mar. 18st, 2022
+        & Final v1.1 PCB
+        & PCB masks, fab order confirmation and, if available, shipment information 
+        \\
+        
+        \hline
+        Mar. 25th, 2022
+        & Simple website to visualize results
+        & Website front-end and back-end files, and website URL or IP
+        \\
+        
+        % stretch goal
+        %\hline
+        %Mar. 25th, 2022
+        %& Twitter integration
+        %& Twitter account
+        %\\
+        
+        \hline
+    \end{tabularx}
+    \caption{Spring milestones}
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%                   Spring Milestones Descriptions
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{table}[H]    
+    \centering
+    \begin{tabularx}{\linewidth}{|c|X|}
+        \hline
+        Project Milestone & Description 
+        \\
+        \hline\hline
+        Prototype v2.0 PCB 
+        & This version should fix most or all remaining hardware bugs, and ensure accurate sensor readings. It should also be mountable in an enclosure.
+        \\
+        
+        \hline
+        Enclosure prototype
+        & An enclosure O-rings, or some other kind of sealant, to keep out dust and water splashes. It should be able to mount the sensors to get environmental readings, and provide space for top-mounted solar-panel.
+        \\
+        
+        \hline
+        Software alpha 2.0 
+        & The base station should be able to set the node's sleep routine settings, and schedule any specific times to wake up at. The command-line utility should be robust enough with minimal bugs.
+        \\
+        
+        \hline
+        REST API created
+        & The base station should run a server and/or relay to bigger server to provide a REST API for clients to query data about environmental readings pertaining to wildfires.
+        \\
+        
+        \hline
+        Enclosure finalized
+        & The enclosure that can house a PCB and mostly not get wet should be good enough.
+        \\
+        
+        \hline
+        Final v1.0 PCB
+        & A PCB should be bug-free, and sent to a proper fab to have high-quality board material and a water resistant coating.
+        \\
+        
+        \hline
+        Software release v1.0
+        & The software should be able to handle errors gracefully, reliably establish connections on the mesh network, and reliably wake-up and transmit data.
+        \\ 
+        
+        \hline
+        Software release v1.1
+        & Bug fixes and minor improvements.
+        \\ 
+        
+        \hline
+        Final v1.1 PCB
+        & Only if needed. Bug fixes and minor improvements.
+        \\
+        
+        \hline
+        Simple website to visualize results
+        & The website doesn't need to look pretty, but it should provide a nice visualization of the nodes deployed plus data readings over time displayed in a graph.
+        \\
+        
+        \hline
+    \end{tabularx}
+    \caption{Spring milestone descriptions}
+\end{table}
+
+\section{Decision Matrix}
+
+\begin{table}[H]
+    \centering
+    
+    \begin{tabularx}{\linewidth}{|c|X|X|X|}
+        \hline
+        Project Idea Name & Cost & Practicality & Familiarity \\
+        \hline
+        Forest Fire Sensor Network &
+        Large number of nodes may lead to higher cost. Required sensors (humidity, camera) are more expensive. &
+        Difficult to verify functionality of design i.e. need way to replicate forest fire, may require setting up nodes in an actual forest &
+        Team members not familiar with working with LoRa and complex networking \\\hline
+        
+        Smart Aeroponics System &
+        Requires building only one system. Less expensive sensors. &
+        Straightforward verification of functionality. Very centralized system. &
+        Standard networking requirements (client/server model). \\\hline
+        
+        Smart Home Management System 
+        & Requires lots of WiFi transceivers, along with bright RBG LEDs for light fixtures. Relatively inexpensive (I hope).
+        & Straightforward verification, and provides utility after senior design
+        & Standard networking requirements (client/server model).
+        \\\hline
+        
+        Power Line Protection 
+        & Requires a 300 and 2 400 series microprocessor relays as well as a varying amount of fiber optic cable which would be very expensive
+        & This would combine the speed of a 400 line differential protection scheme with the utility of a step distance relay
+        & Team members would have to learn about power line protection schemes to complete project
+        \\\hline
+        
+    \end{tabularx}
+    \caption{A decision matrix of potential project ideas.}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\linewidth}{|c|X|}
+        \hline
+        Project Idea Name & Description \\
+        \hline
+        Forest Fire Sensor Network &
+        A network of sensor nodes designed to detect a forest fire early and alert the appropriate people before it can spread. \\\hline
+        
+        Smart Aeroponics System &
+        This would be a smart aeroponics system that utilizes various sensors and data processing to grow plants. Would contain sensors such as moisture and light. Could be remotely monitored and controlled via a website/app. Could utilize machine learning to detect various potential plant issues. \\\hline
+        
+        Smart Home Management System 
+        & Create a personalized smart-home experience where preferences are stored for each person in the house, and profiles are chosen based on the connect WiFi devices and/or facial detection when entering the door. Positions in the house can be tracked to automatically turn on lights where you walk, and to play music and set an ambiance when you get home.
+        \\
+        
+        \hline
+        Power Line Protection &
+        Creating a new protection relay that combines the functionality of 2 other protection schemes. It combines line differential which requires fiber optic between 2 substations that allows the relays to detect and solve problems almost instantly. It also uses step distance which uses a mathematical formula to calculate the position of a power line fault giving field crews the ability to know exactly where a problem is on a power line as they come up. \\\hline
+    
+    \end{tabularx}
+    \caption{A description of each project idea.}
+\end{table}
+
+\end{document}
