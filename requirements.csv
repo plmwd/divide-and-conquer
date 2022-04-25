@@ -1,0 +1,9 @@
+Number,Constraint,Value,Units
+1,The nodes must be light enough so that they can be affixed to a tree or other tall structure and not be of a concern to fall off.,,
+2,The nodes must cost lower than or the same as alternative forest fire monitoring methods.,,
+3,The nodes must be able to withstand water from rainfall.,,
+4,The nodes must be able to withstand high winds. ,,
+5,The nodes must be able to withstand temperature extremes. ,,
+6,The nodes must be able to support a communication range of 3 to 4 miles in order to cover a larger area with a low node density.,3-4,miles
+7,The nodes must be able to operate on less power than what one solar panel could generate in a single day to allow for operation when there is no sunlight present.,,
+8,The base station must be able to operate off of mains power. ,,

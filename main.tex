@@ -1,6 +1,6 @@
-\documentclass{article}
+\documentclass[titlepage, 11pt, letterpaper]{article}
 
-% Formatting
+% Packages
 \usepackage[utf8]{inputenc}
 \usepackage[margin=1in]{geometry}
 \usepackage{csvsimple}
@@ -9,102 +9,242 @@
 \usepackage{float}
 \usepackage{multirow}
 \usepackage{longtable}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{nameref}
+\makeatletter
+\newcommand*{\currentsection}{\thesection \leftmark}
+\newcommand*{\currentsubsection}{\thesubsection \leftmark}
+\makeatother
 
-\title{\Huge{Forest Fire Detector Network \\ \Large Group 41}}
+
+
+\title{\Huge{Pollution Detection Network} \\ \vspace{0.5cm} \LARGE{Group 41}}
 \author{
 {
 \centering
-\begin{tabular}{c c c c}
-Ian Wallace & Paul Wood & Parke Benjamin & Randy Alvarez \\
-\normalsize\textit{Computer Engineering} & \normalsize\textit{Computer Engineering} & \normalsize\textit{Electrical Engineering} & \normalsize\textit{Electrical Engineering} \\
+\begin{tabular}{c c}
+Ian Wallace & Paul Wood  \\
+\normalsize\textit{Computer Engineering} & \normalsize\textit{Computer Engineering} \\
+& \\
+Parke Benjamin & Randy Alvarez \\
+\normalsize\textit{Electrical Engineering} & \normalsize\textit{Electrical Engineering} \\
 \end{tabular}
 }
 }
 \date{}
 
+\usepackage{setspace}
+\linespread{0.83}
+\renewcommand{\arraystretch}{1.25}
+
+% Requirement Counter
+\newcounter{secRecNo}[section]
+\newcounter{subSecReqNo}[subsection]
+
+
+
 \begin{document}
 
 \maketitle
 
+
+\tableofcontents
+\listoftables
+\listoffigures
+\newpage
+
 \section{Introduction}
 \subsection{Narrative Description and Motivation}
-For this project, we plan to create a sensor network used for detecting forest fires. The sensor network will consist of multiple identical nodes. These nodes will be physically mounted on trees and evenly spread throughout the area to be monitored. Each node will contain sensors that will be used to detect a fire. Each node will also contain a LoRa transceiver that will be used to propagate data through the sensor network to the base station. This base station will process the data to determine if there is a fire and can relay that information to a human operator. This network should help detect forest fires early, before they become too large and difficult to contain.
+For this project, we plan to create a sensor network used for measuring quantities of certain pollutants over a certain area in an urban environment. The sensor network will consist of multiple identical nodes. These nodes will be physically mounted in various locations and evenly spread throughout the area to be monitored. Each node will contain various sensors that will be used to measure certain pollutants. Each node will also contain a LoRa transceiver that will be used to send the sensor data to a gateway. This gateway will process then send this data to an external server over the internet, where it can be further processed and analyzed. This network should help determine areas of concern with regards to pollution and, hopefully, allow for measures to be taken to reduce it.
 
 \subsection{Project Goals}
 \begin{itemize}
     \item The sensor nodes should be low cost. 
     \item The sensor nodes should be lightweight. 
-    \item The sensor nodes should be able to read data in from the environment and that data through other nodes to the base station. 
+    \item The sensor nodes should be able to read data in from the environment and that data through other nodes to the gateway. 
     \item The sensors nodes should be able to communicate over a large enough distance in order to make it feasible to cover large enough area with nodes.
-    \item The nodes should require little to no maintenance i.e. "place and forget".
-    \item The sensors nodes should be easy to install.
-    \item The base station should be able to connect to the internet to notify an operator about a forest fire.
+    \item The nodes should require little to no maintenance.
+    \item The sensor nodes should be easy to install.
+    \item The gateway should be able to connect to the internet to send the data it receives from the nodes to an external server over the internet.
     
 \end{itemize}
 
 \section{Requirements and Constraints}
-\subsection{Requirements}
+\subsection{Engineering Requirements}
+
+\begin{table}[H]
+\centering
+\caption{The gateway requirements}
+\begin{tabularx}{\linewidth}{|c|X|c|c|}
+\hline
+No. & Requirement & Value & Units \\
+\hline\hline
+1.0 & The gateway should cost no more than \$200 & 200 & dollars \\\hline
+1.1 & The gateway should be no larger than 24" x 24" x 24" & 24x24x24 & inches \\\hline
+1.2 & The gateway weight should be no more than than 10 pounds & 10 & lbs \\\hline
+1.3 & The gateway should utilize LoRaWAN with the base station as the gateway with the capacity to connect with up to 8 devices simultaneously. & 8 & nodes \\\hline
+1.4 & The gateway should be able to communicate with nodes up to 10 km away with ideal conditions & 10	& km \\\hline
+1.5 & The gateway should be able to communicate with nodes up to 3 km away in an urban environment & 3 & km \\\hline
+% & The gateway shall be able to connect to the Internet with at least a 512 Kbps upload/download link. & 512 & Kbps \\\hline
+1.6 & The gateway should be able to manage up to 256 nodes & 256 & nodes \\\hline
+% & The gateway shall configure the nodes such that the gateway can receive 256 node measurements per hour & 256 & measurements/hour \\\hline
+\end{tabularx}
+\label{tab:networkingRequirements}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{The sensor node requirements.}
+\begin{tabularx}{\linewidth}{|c|X|c|c|}
+\hline
+No. & Requirement & Value & Units \\
+\hline\hline
+2.0 & The sensor node should cost no more than \$150 & 150 & dollars \\\hline
+2.1 & The sensor node should be no larger than 12" x 12" x 12" & 12x12x12 & inches \\\hline
+2.2 & The sensor node weight should be no more than 10 pounds & 10 & lbs \\\hline
+2.3 & The sensor node should stay operational without intervention for 1 year & 1 & year \\\hline
+2.4 & The sensor node sensors should have a maximum tolerance of +/- 20\% & 20 & \% \\\hline
+2.5 & The sensor node should transmit for no more than 30 seconds every 24 hours & 30 & seconds \\\hline
+
+% & The sensor node PCB shall be no wider than TBD inches. & TBD & inches\\\hline
+% & The sensor node shall stay in a low power state and draw less than 1 microamp when not reading from the sensor or transmitting data. & 1 & $\mu$A \\\hline
+% & The nodes shall not consume more than 150 mW. & 150 & mW \\\hline
+% & The nodes shall last one year before a battery replacement becomes necessary. & 1 & year \\\hline
+% & The sensor node shall take a take a reading from the temperature sensor 1 time per hour. & 1 &reading/hour\\\hline
+% & The sensor node shall take a take a reading from the O3 sensor 1 time per hour. & 1 & reading/hour\\\hline
+% & The sensor node shall take a take a reading from the PM sensor 1 time per hour. & 1 & reading/hour\\\hline
+% & The sensor node shall take a take a reading from the CO sensor 1 time per hour. & 1 & reading/hour\\\hline
+% & The sensor node shall take a take a reading from the SO2 sensor 1 time per hour. & 1 & reading/hour\\\hline
+% & The sensor node shall take a take a reading from the NO2 sensor 1 time per hour. & 1 & reading/hour\\\hline
+% & The sensor node microcontroller shall draw no more than 50 mA when taking a sensor reading. & 50 & mA \\\hline
+% & The sensor node microcontroller shall draw no more than 50 mA when transmitting data to the gateway. & 50 & mA\\\hline
+% & The sensor node microcontroller shall have a clock speed of at least TBD MHz. & TBD & MHz\\\hline
+% & The sensor node microcontroller shall have draw no more than 20 uA when waiting between switching to an active state. & 20 & microamp\\\hline
+% & The sensor node shall have battery with at least 3000 mAH & 3000 & mAH\\\hline
+% & The sensor node shall have a battery with a voltage of 3.3 V. & 3.3 & V\\\hline
+\end{tabularx}
+\label{tab:nodeRequirements}
+\end{table}
+
+\subsection{Engineering Specifications}
+\begin{table}[H]
+\centering
+\caption{The gateway and networking engineering specifications}
+\begin{tabularx}{\linewidth}{|c|X|}
+\hline
+No. & Requirement \\
+\hline\hline
+3.0 & The gateway shall use LoRa and LoRaWAN for the wireless communication protocol \\\hline
+3.1 & The gateway should adhere to the LoRa Fair Access policy \\\hline
+3.2 & The gateway should have enough internet bandwidth to support all of its connected nodes \\\hline
+3.3 & The network shall utilize a star networking topology.\\\hline
+3.4 & We define a component of our network to be known as a cell, which shall consist of nodes connected to a gateway. \\\hline
+3.5 & The gateway shall be able communicate with an external server over the internet.\\\hline
+3.6 & The server shall be hosted on existing web hosting platform.\\\hline
+3.7 & The server shall host a website that displays data collected from the sensors.\\\hline
+\end{tabularx}
+\label{tab:networkingSpecs}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{The node engineering specifications}
+\begin{tabularx}{\linewidth}{|c|X|}
+\hline
+No. & Requirement \\
+\hline\hline
+4.0 & The sensor node shall use a radio and antenna that is part of a daughterboard that can be attached to the main PCB.\\\hline
+4.1 & The node should use a battery and solar panel \\\hline
+4.2 & The sensor node shall contain a microcontroller. \\\hline
+4.3 & The sensor node microcontroller shall support the UART protocol.\\\hline
+4.4 & The sensor node microcontroller shall have at least one ADC.\\\hline
+4.5 & The sensor node microcontroller shall support JTAG debugging.\\\hline
+4.6 & The sensor node shall contain a NO2 sensor.\\\hline
+4.7 & The sensor node shall contain a PM sensor.\\\hline
+4.8 & The sensor node shall contain a SO2 sensor.\\\hline
+4.9 & The sensor node shall contain a O3 sensor.\\\hline
+4.10 & The sensor node shall contain a CO sensor.\\\hline
+\end{tabularx}
+\label{tab:nodeSpecs}
+\end{table}
+
+
+\subsection{Constraints}
+\begin{table}[H]
+\centering
+\caption{The constraints.}
+\begin{tabularx}{\linewidth}{|X|}
+\hline
+Constraint \\
+\hline
+The nodes must be light enough so that they can be affixed to a building or other structure and not be of a concern to fall off.\\\hline
+The nodes must low cost to be able to placed in greater number. \\\hline
+The nodes must be able to withstand water from rainfall.\\\hline
+The nodes must be able to withstand high winds. \\\hline
+The nodes must be able to withstand temperature extremes. \\\hline
+The nodes must be able to support a communication range of at least 1 km\\\hline
+The nodes must be able to operate on less power than what one solar panel could generate in a single day to allow for operation when there is no sunlight present.\\\hline
+The gateway must be able to operate off of mains power.\\\hline
+
+\end{tabularx}
+\label{tab:constraints}
+\end{table}
+
+\section{House of Quality}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=6.25in]{"./hoq.png"} 
+    \caption{The house of quality diagram.}
+    \label{fig:hoq}
+\end{figure}
+
+\section{Stretch Goals}
 \begin{tabularx}{\linewidth}{|X|c|c|}
 \hline
 Requirement & Value & Units \\
 \hline
-The nodes shall use LoRa as the communication protocol. & N/A & N/A \\\hline
-The nodes shall be able connect to a computer and be controlled using a command line interface. & N/A & N/A \\\hline
-The nodes shall meet the IP54 requirements. & N/A & N/A \\\hline
-The nodes shall not consume more than 250 mW. & 250 & mW \\\hline
-The nodes shall last 1-2 years before a battery replacement becomes necessary. & 1-2 & years \\\hline
-The nodes shall use solar panels. & N/A & N/A \\\hline
-The base station shall be able to connect to the internet. & N/A & N/A \\\hline
-The base station shall be able to alert a human operator about a fire. & N/A & N/A \\\hline
-The base station shall be to run a server instance. & N/A & N/A \\\hline
-The base station shall be have an Ethernet module. & N/A & N/A \\\hline
-The base station shall be able to control and receive data from the nodes. & N/A & N/A \\\hline
-The base station shall be able to display information to the user via a GUI. & N/A & N/A \\\hline
-The base station shall have a long range transmitter and antenna in order to communicate with nodes up to 15 km away. & 15 & km \\\hline
-The base station shall have a powerful enough processor in order to maintain communication with nodes and run a server instance. & N/A & N/A \\\hline
-
-
-\end{tabularx}
-
-\subsection{Constraints}
-\begin{tabularx}{\linewidth}{|X|c|c|}
 \hline
-Constraint & Value & Units \\
-\hline
-The nodes must be light enough so that they can be affixed to a tree or other tall structure and not be of a concern to fall off. & N/A & N/A \\\hline
-The nodes must cost lower than or the same as alternative forest fire monitoring methods. & N/A & N/A \\\hline
-The nodes must be able to withstand water from rainfall. & N/A & N/A \\\hline
-The nodes must be able to withstand high winds. & N/A & N/A \\\hline
-The nodes must be able to withstand temperature extremes. & N/A & N/A \\\hline
-The nodes must be able to support a communication range of 3 to 4 miles in order to cover a larger area with a low node density. & 3-4 & miles \\\hline
-The nodes must be able to operate on less power than what one solar panel could generate in a single day to allow for operation when there is no sunlight present. & N/A & N/A \\\hline
-The base station must be able to operate off of mains power. & N/A & N/A \\\hline
 
+Operability with the decentralized Helium LoRa Network & Yes/No & Boolean \\\hline
+% PSI and AQI forcasting N days in advance & N & days \\\hline
+Increased sensor accuracy & 10-15 & percent \\\hline
+Twitter alerts for hazardous air pollution & Yes/No & Boolean \\\hline
+Increased battery life of the sensor nodes & 2-4 & years \\\hline
+Sensor nodes are completely sustainable through the use of solar panels & Yes/No & Boolean \\\hline
+Increased sensor node LoRa range in highly urban environments & 4-5 & km \\\hline
+Highly responsive and modern graphical user interface (web site) & Yes/No & \\\hline
+
+%  Support for sensors nodes to double as relay nodes for 1 hop 
 \end{tabularx}
 
 
-\section{Block Diagram}
+\section{Block Diagrams}
+
 % Block Diagram for Node HW
+\subsection{Sensor Node Hardware Diagram}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=4.6in]{"./hwNodeBD.png"} 
+    \includegraphics[width=3.25in]{"./hwNodeBD.png"} 
     \caption{The block diagram for the sensor node hardware.}
     \label{fig:hwNodeBD}
 \end{figure}
 
-% Block Diagram for Base Station HW
+% Block Diagram for gateway HW
+\subsection{Gateway Hardware Diagram}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=4.6in]{"./hwBaseStationBD.png"} 
-    \caption{The block diagram for the base station hardware.}
+    \includegraphics[width=3.25in]{"./hwGatewayBD.png"} 
+    \caption{The block diagram for the gateway hardware.}
     \label{fig:hwBaseStationBD}
 \end{figure}
 
-% TODO: base station software
-% Block Diagram for Node Station SW
+% TODO: gateway software
+% Block Diagram for Node SW
+\subsection{Sensor Node Software Diagram}
 \begin{figure}[H]
     \centering
-    \includegraphics[width=4.6in]{"./swNodeBD.png"} 
+    \includegraphics[width=4in]{"./swNodeBD.png"} 
     \caption{The block diagram for the node software.}
     \label{fig:swNodeBD}
 \end{figure}
@@ -120,10 +260,13 @@ The base station must be able to operate off of mains power. & N/A & N/A \\\hlin
         Power Subsystem & The power subsystem will take in and regulate power from the solar panel charging the battery as well as taking power from the battery for whatever needs the system controller requires. The power subsystem will also invert the DC power from the solar panel and battery to AC if required. \\\hline
         Solar Panel & The solar panel will feed power to the power subsystem where a solar power controller will be placed to take in the generated power. \\\hline
         System Controller & The system controller take in and process data from the sensors and output data to the LoRa transceiver. \\\hline
-        Humidity Sensor & The humidity sensor will take a measurement of the relative humidity and send it to the system controller. \\\hline
         Temperature Sensor & The temperature sensor will take a measurement of the current temperature and send it to the system controller. \\\hline
-        Camera & The camera will capture an image and send it to the system controller. \\\hline
-        LoRa & The LoRa transceiver will receive data from the system controller and send that data to either another sensor node or the base station. \\\hline
+        O$_3$ Sensor & The temperature sensor will take a measurement of the current amount of detected ozone (O$_3$) and send it to the system controller. \\\hline
+        CO Sensor & The temperature sensor will take a measurement of the current amount of detected carbon monoxide (CO) and send it to the system controller. \\\hline
+        SO$_2$ Sensor & The temperature sensor will take a measurement of the current amount of detected sulfur dioxide (SO$_2$) and send it to the system controller. \\\hline
+        NO$_2$ Sensor & The temperature sensor will take a measurement of the current amount of detected nitrogen dioxide (NO$_2$) and send it to the system controller. \\\hline
+        PM Sensor & The temperature sensor will take a measurement of the current amount of detected particulate matter (PM) and send it to the system controller. \\\hline
+        LoRa & The LoRa transceiver will receive data from the system controller and send that data to the gateway. \\\hline
     \end{tabularx}
     
     \label{tab:descHWNodeBD}
@@ -131,23 +274,23 @@ The base station must be able to operate off of mains power. & N/A & N/A \\\hlin
 
 \begin{table}[H]
     \centering
-    \caption{A description of each block in the base station hardware block diagram.}
+    \caption{A description of each block in the gateway hardware block diagram.}
     \begin{tabularx}{\linewidth}{|c|X|}
         \hline
         Block Name & Description \\ 
         \hline
         Power Subsystem & The power subsystem will take in power from the battery for whatever needs the development board requires. The power subsystem will also invert the DC power from the solar panel and battery to AC if required. \\\hline
         Mains Power & This is the AC power coming from a wall outlet. \\\hline
-        Ethernet & The Ethernet module will alow the development board to connect to the internet. \\\hline
+        Ethernet & The Ethernet module will allow the development board to connect to the internet. \\\hline
         LoRa & The LoRa transceiver will receive data from the sensor nodes and send that data to the development board. \\\hline
-        Development Board & The development board will process the sensor data recieve from the sensor nodes and will determine if that data indicates a forest fire. If a forest fire is detected, it will send a signal to a human operator over the internet. \\\hline
+        Development Board & The development board will process the sensor data received from the sensor nodes. This data will then be sent to an external server over the internet where it can be analyzed. \\\hline
     \end{tabularx}
     \label{tab:descHWBaseStationBD}
 \end{table}
 
-\begin{table}[H]
+\begin{table}[]
     \centering
-    \caption{A description of each block in the sensor node hardware block diagram.}
+    \caption{A description of each block in the sensor node software block diagram.}
     \begin{tabularx}{\linewidth}{|c|X|}
         \hline
         Block Name & Description \\ 
@@ -156,9 +299,12 @@ The base station must be able to operate off of mains power. & N/A & N/A \\\hlin
         Data Management & This software will be responsible for processing data received from the sensors. \\\hline
         Sleeping Logic & This software will handle the logic for switching between taking sensor measurements and residing in a low-power "sleep" mode between sensor measurements. \\\hline
         LoRa & This is a device driver for the LoRa transceiver. \\\hline
-        Camera & This is a device driver for the camera. \\\hline
         Temperature Sensor & This is a device driver for the temperature sensor. \\\hline
-        Humidity Sensor & This is a device driver for the humidity sensor. \\\hline
+        O$_3$ Sensor & This is a device driver for the O$_3$ sensor. \\\hline
+        CO Sensor & This is a device driver for the CO sensor. \\\hline
+        SO$_2$ Sensor & This is a device driver for the SO$_2$ sensor. \\\hline
+        NO$_2$ Sensor & This is a device driver for the NO$_2$ sensor. \\\hline
+        PM Sensor Sensor & This is a device driver for the PM sensor. \\\hline
         LoRaWAN & This handles the networking for the LoRa networking. \\\hline
         Multi-hop Routing & This software will control how traffic is routed around the sensor node network. \\\hline
     \end{tabularx}
@@ -168,25 +314,28 @@ The base station must be able to operate off of mains power. & N/A & N/A \\\hlin
 \section{Estimated Budget}
 \begin{table}[H]
 \centering
-    \begin{tabular}{|c|c|c|c|}
+    \begin{tabular}{|c|c|c|l|}
         \hline
-        Component & Approx. Unit Cost & Quantity & Total Cost \\
+        Component & Unit Cost & Quantity & Total Cost \\
         \hline\hline
         Solar Panel                 & \$30.00 & 1 & \$30.00 \\
-        Solar Charge Regulator      & \$20.00 & 1 & \$20.00 \\
+        Solar Charge Regulator      & \$5.00 & 1 & \$5.00 \\
         Battery                     & \$10.00 & 1 & \$10.00 \\
         Electronic Components       & \$10.00 & 1 & \$10.00 \\
         \hline
         LoRa Transceiver            & \$30.00 & 1 & \$30.00 \\
         Microcontroller             & \$3.00  & 1 & \$3.00  \\
-        PCB                         & \$10.00 & 5 & \$10.00 \\
+        PCB                         & \$10.00 & 1 & \$10.00 \\
         Electronic Components       & \$10.00 & 1 & \$10.00 \\
         \hline
-        Humidity                    & \$3.00  & 1 & \$3.00 \\
-        Temperature                 & \$7.00  & 1 & \$7.00 \\
-        Camera                      & \$20.00 & 1 & \$20.00\\
+        O$_3$ Sensor                & \$49.00 & 1 & \$49.00\\
+        Temperature Sensor          & \$4.00  & 1 & \$8.00 \\
+        CO Sensor                   & \$20.00 & 1 & \$20.00\\
+        SO$_2$ Sensor               & \$90.00 & 1 & \$90.00\\
+        NO$_2$ Sensor               & \$50.00 & 1 & \$50.00\\
+        PM Sensor               & \$50.00 & 1 & \$50.00\\
         \hline\hline
-        \multicolumn{2}{|}{Multirow} & Total & \$153 \\
+        \multicolumn{2}{|}{Multirow} & Total & \$371.00 \\
         \hline
     \end{tabular}
     \caption{The budget for each node.}
@@ -200,14 +349,15 @@ The base station must be able to operate off of mains power. & N/A & N/A \\\hlin
         \hline\hline
         Power Subsystem Components  & \$10.00 & 1 & \$10.00 \\
         \hline
-        LoRa Transceiver            & \$30.00 & 1 & \$30.00 \\
+        LoRa Transceiver            & \$40.00 & 1 & \$40.00 \\
+        Antenna                     & \$40.00 & 1 & \$40.00 \\
         Raspberry Pi 4              & \$35.00 & 1 & \$35.00   \\
         Electronic Components       & \$10.00 & 1 & \$10.00 \\
         \hline\hline
-        \multicolumn{2}{|}{Multirow} & Total & \$85 \\
+        \multicolumn{2}{|}{Multirow} & Total & \$135 \\
         \hline
     \end{tabular}
-    \caption{The budget for the base station.} 
+    \caption{The budget for the gateway.} 
 \end{table}
 
 
@@ -291,7 +441,7 @@ The base station must be able to operate off of mains power. & N/A & N/A \\\hlin
         
         \hline
         Software alpha 1.0 
-        & The nodes can communicate and route packets to the base station, and the base station can communicate with all or specific nodes on the network. There also exists some sort of command line interface on the base station to talk to the nodes, but there are no required internet capabilities of the base, yet. The nodes can go to sleep, but a sleep routine isn't configured optimally.
+        & The nodes can communicate and route packets to the gateway, and the gateway can communicate with all or specific nodes on the network. There also exists some sort of command line interface on the gateway to talk to the nodes, but there are no required internet capabilities of the base, yet. The nodes can go to sleep, but a sleep routine isn't configured optimally.
         \\
         
         \hline
@@ -418,12 +568,12 @@ The base station must be able to operate off of mains power. & N/A & N/A \\\hlin
         
         \hline
         Software alpha 2.0 
-        & The base station should be able to set the node's sleep routine settings, and schedule any specific times to wake up at. The command-line utility should be robust enough with minimal bugs.
+        & The gateway should be able to set the node's sleep routine settings, and schedule any specific times to wake up at. The command-line utility should be robust enough with minimal bugs.
         \\
         
         \hline
         REST API created
-        & The base station should run a server and/or relay to bigger server to provide a REST API for clients to query data about environmental readings pertaining to wildfires.
+        & The gateway should run a server and/or relay to bigger server to provide a REST API for clients to query data about environmental readings pertaining to wildfires.
         \\
         
         \hline
